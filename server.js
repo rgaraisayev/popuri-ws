@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({
 app.use(morgan('dev'));
 // app.set('jwt-secret', config.secret)
 
-const port = process.env.PORT | 8081
+const port = process.env.PORT_POPURI | 8081
 
 var auth = require('http-auth');
 
