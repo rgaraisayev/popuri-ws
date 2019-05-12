@@ -10,7 +10,7 @@ router.route('/filter')
 router.route('/randomMusic/:millis/:skip')
     .get(MusicController.randomMusic)
 
-router.route('/next')
+router.route('/next/:skip')
     .get(MusicController.nextMusic)
 
 router.route('/')
