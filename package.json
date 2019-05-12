@@ -1,0 +1,38 @@
+{
+  "name": "me.taskpal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "TaskPal",
+    "API"
+  ],
+  "author": "Ramazan Garaisayev",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "date-diff": "^0.1.3",
+    "ejs": "^2.5.8",
+    "express": "^4.16.2",
+    "express-promise-router": "^2.0.0",
+    "fs-extra": "^4.0.2",
+    "http-auth": "^3.2.3",
+    "jsdom": "^11.10.0",
+    "jsonwebtoken": "^8.2.1",
+    "moment": "^2.22.1",
+    "mongoose": "^4.13.5",
+    "morgan": "^1.9.0",
+    "mp3-duration": "^1.1.0",
+    "multer": "^1.3.0",
+    "node-datetime": "^2.0.6",
+    "node-schedule": "^1.2.5",
+    "youtube-dl": "^1.12.2"
+  }
+}
