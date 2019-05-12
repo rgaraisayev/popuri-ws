@@ -14,59 +14,6 @@ module.exports = {
         res.send(new GenResponse(null, musics))
     },
 
-
-    downloadMusic: async (req, res, next) => {
-        var resource = Fs.readFileSync('api/siteInterfaces/' + name + "/" + name + ".html");
-        // console.log(resource)
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(resource, 'binary');
-    },
-
-    dolmafm: async (req, res, next) => {
-        const { mus } = req.query;
-        var dir = process.env.PROJECT_DIR;
-        if (!dir)
-            dir = 'C:/Users/rgara/Projects/InstaMusic/mustagram-nodews'
-        var resource = Fs.readFileSync(dir + "/apps/mustagram/res/dolmafm/" + mus);
-        // // console.log(resource)
-        res.writeHead(200, { 'Content-Type': '*/*' });
-        res.end(resource, 'binary');
-    },
-    randomMusic: async (req, res, next) => {
-        const { millis, skip } = req.params;
-        var { langFilter } = req.query;
-        console.log(langFilter);
-        var query = {};
-
-        if (langFilter) {
-            langFilter = langFilter.replace('[', '').replace(']', '')
-            console.log(langFilter);
-            if (langFilter) {
-                query = { $or: [] };
-                var langs = langFilter.split(",");
-                for (var i = 0; i < langs.length; i++) {
-                    query.$or.push({ lang: langs[i].trim() })
-                }
-            }
-        }
-        query['duration'] = { '$gte': parseInt(millis), '$lte': parseInt(millis) + 5000 }
-        query['status'] = 'active'
-        console.log(query);
-        var music = await Music.findOne(query).skip(parseInt(skip));
-
-        if (music) {
-            console.log(music);
-            // res.send(count + "<br\>" + random + "<br\>" + music)
-            var dir = process.env.PROJECT_DIR;
-            if (!dir)
-                dir = 'C:/Users/rgara/Projects/InstaMusic/mustagram-nodews'
-            var resource = Fs.readFileSync(dir + "/apps/mustagram/res/music/" + music.name + "." + music.format);
-            // // console.log(resource)
-            res.writeHead(200, { 'Content-Type': '*/*' });
-            res.end(resource, 'binary');
-        } else res.status(400).send(null)
-    },
-
     nextMusic: async (req, res, next) => {
         const { skip } = req.params;
         var { langFilter } = req.query;
@@ -84,32 +31,29 @@ module.exports = {
             }
         }
         query['status'] = 1
-        console.log(query);
+        var count = await Music.count(query);
+        var musicList = [];
+
+        skip = Math.random() * count;
         var music = await Music.findOne(query).skip(parseInt(skip));
-        if (music) {
-            var dir = process.env.MC_DIR;
-            if (!dir)
-                dir = ''
-            var resource = Fs.readFileSync(dir + "/" + music.name + "." + music.format);
-            res.writeHead(200, { 'Content-Type': '*/*' });
-            res.end(resource, 'binary');
-        } else res.status(400).send(null)
+        musicList.push(music);
+
+        skip = Math.random() * count; 
+        music = await Music.findOne(query).skip(parseInt(skip));
+        musicList.push(music);
+        
+        skip = Math.random() * count;
+        music = await Music.findOne(query).skip(parseInt(skip));
+        musicList.push(music);
+
+        skip = Math.random() * count;
+        music = await Music.findOne(query).skip(parseInt(skip));
+        musicList.push(music);
+
+        res.send(new GenResponse(null, musicList))
     },
 
-    streamMusic: async (req, res, next) => {
-        const { name } = req.params;
-
-        var music = await Music.findOne({ name });
-        if (music) {
-            var dir = process.env.MC_DIR;
-            if (!dir)
-                dir = ''
-            var resource = Fs.readFileSync(dir + "/" + music.name + "." + music.format);
-            res.writeHead(200, { 'Content-Type': '*/*' });
-            res.end(resource, 'binary');
-        } else res.status(400).send(null)
-    },
-    insertMusicsToDb: async (req, res, next) => {
+    insertMusicsToDb: async (req, res, next) => { 
         // var filesInfo = Fs.readJSONSync("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\clearmusiclist.json");
 
         // for (let mf of filesInfo) {

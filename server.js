@@ -45,8 +45,8 @@ app.use('/popuri/api/v1.0/music', require('./popuri/api/versions/v1.0/routes/mus
 
 
 app.listen(port, () => {
-    console.log('Server started on: ' + process.env.NODE_ENV)
-    console.log('Server started on: ' + port)
+    console.log('Popuri Server started on: ' + process.env.NODE_ENV + " " + process.env.PORT_POPURI)
+    console.log('Popuri started on: ' + port)
 })
 
 

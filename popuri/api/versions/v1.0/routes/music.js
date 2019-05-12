@@ -6,10 +6,7 @@ const MusicController = require('../controllers/music');
 
 router.route('/filter')
     .get(MusicController.filteredMusics);
-
-router.route('/randomMusic/:millis/:skip')
-    .get(MusicController.randomMusic)
-
+ 
 router.route('/next/:skip')
     .get(MusicController.nextMusic)
 
