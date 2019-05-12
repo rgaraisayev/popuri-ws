@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const morgan = require('morgan');
 const config = require('./config');
- 
+
 const path = require('path');
 
 const app = express()
@@ -16,22 +16,22 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
- 
+
 
 app.use(morgan('dev'));
 // app.set('jwt-secret', config.secret)
 
-const port = process.env.PORT_POPURI | 8081
+const port = process.env.PORT_POPURI ? process.env.PORT_POPURI : 8081
 
 var auth = require('http-auth');
 
 var basic = auth.basic({
-        realm: "Web."
-    }, function (username, password, callback) { // Custom authentication method.
-        callback(username === "mustapp" && password === "appmust123");
-    }
+    realm: "Web."
+}, function (username, password, callback) { // Custom authentication method.
+    callback(username === "mustapp" && password === "appmust123");
+}
 );
- 
+
 // app.use('/api/', auth.connect(basic), require('./apps/notifar/api/general/routes/web'));
 
 //WHATSAPP EXPLORE
