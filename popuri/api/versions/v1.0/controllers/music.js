@@ -131,7 +131,7 @@ module.exports = {
         //         else
         //             console.log("ALTEADY HAVE: " + mf.fileName)
         //     });
-        }
+        // }
 
 
         // for (let file of files) {
@@ -156,7 +156,7 @@ module.exports = {
         // // console.log(resource)
         // res.writeHead(200, { 'Content-Type': 'text/html' });
         // res.end(resource, 'binary');
-        res.send("OK")
+        // res.send("OK")
     }
 
 
