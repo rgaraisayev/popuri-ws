@@ -7,7 +7,7 @@ const MusicController = require('../controllers/music');
 router.route('/filter')
     .get(MusicController.filteredMusics);
  
-router.route('/next/:skip')
+router.route('/next')
     .get(MusicController.nextMusic)
 
 router.route('/')

@@ -15,9 +15,10 @@ module.exports = {
     },
 
     nextMusic: async (req, res, next) => {
-        const { skip } = req.params;
+        // const { skip } = req.params;
         var { langFilter } = req.query;
         var query = {};
+        var skip;
 
         if (langFilter) {
             langFilter = langFilter.replace('[', '').replace(']', '')
