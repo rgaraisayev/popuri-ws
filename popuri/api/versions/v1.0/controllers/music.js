@@ -68,7 +68,7 @@ module.exports = {
     },
 
     nextMusic: async (req, res, next) => {
-        const { millis, skip } = req.params;
+        const { skip } = req.params;
         var { langFilter } = req.query;
         var query = {};
 
@@ -87,36 +87,50 @@ module.exports = {
         console.log(query);
         var music = await Music.findOne(query).skip(parseInt(skip));
         if (music) {
-            var dir = process.env.PROJECT_DIR;
+            var dir = process.env.MC_DIR;
             if (!dir)
-                dir = 'C:/Users/rgara/Projects/InstaMusic/mustagram-nodews'
-            var resource = Fs.readFileSync(dir + "/apps/mustagram/res/music/" + music.name + "." + music.format);
+                dir = ''
+            var resource = Fs.readFileSync(dir + "/" + music.name + "." + music.format);
+            res.writeHead(200, { 'Content-Type': '*/*' });
+            res.end(resource, 'binary');
+        } else res.status(400).send(null)
+    },
+
+    streamMusic: async (req, res, next) => {
+        const { name } = req.params;
+
+        var music = await Music.findOne({ name });
+        if (music) {
+            var dir = process.env.MC_DIR;
+            if (!dir)
+                dir = ''
+            var resource = Fs.readFileSync(dir + "/" + music.name + "." + music.format);
             res.writeHead(200, { 'Content-Type': '*/*' });
             res.end(resource, 'binary');
         } else res.status(400).send(null)
     },
     insertMusicsToDb: async (req, res, next) => {
-        var filesInfo = Fs.readJSONSync("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\clearmusiclist.json");
+        // var filesInfo = Fs.readJSONSync("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\clearmusiclist.json");
 
-        for (let mf of filesInfo) {
-            console.log("SAVING: " + mf.fileName)
-            await mp3Duration("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\" + mf.fileName, async function (err, duration) {
-                if (err) return console.log("MP#: " + err.message);
-                if (!await Music.findOne({ name: mf.fileName.split(".")[0] })) {
-                    await new Music({
-                        duration: duration * 1000,
-                        lang: 'tr',
-                        name: mf.fileName.split(".")[0],
-                        format: mf.fileName.split(".")[1],
-                        dateWritten: Date.now(),
+        // for (let mf of filesInfo) {
+        //     console.log("SAVING: " + mf.fileName)
+        //     await mp3Duration("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\" + mf.fileName, async function (err, duration) {
+        //         if (err) return console.log("MP#: " + err.message);
+        //         if (!await Music.findOne({ name: mf.fileName.split(".")[0] })) {
+        //             await new Music({
+        //                 duration: duration * 1000,
+        //                 lang: 'tr',
+        //                 name: mf.fileName.split(".")[0],
+        //                 format: mf.fileName.split(".")[1],
+        //                 dateWritten: Date.now(),
 
-                        song: { author: mf.author, name: mf.musicName }
-                    }).save();
-                    console.log("SAVED: " + mf.fileName)
-                }
-                else
-                    console.log("ALTEADY HAVE: " + mf.fileName)
-            });
+        //                 song: { author: mf.author, name: mf.musicName }
+        //             }).save();
+        //             console.log("SAVED: " + mf.fileName)
+        //         }
+        //         else
+        //             console.log("ALTEADY HAVE: " + mf.fileName)
+        //     });
         }
 
 
