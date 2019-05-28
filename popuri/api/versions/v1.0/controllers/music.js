@@ -36,7 +36,7 @@ module.exports = {
 
     nextMusicForced: async (req, res, next) => {
         const { uniqueKey, id } = req.query;
-        await MusicForcedChange.save({ user: await User.findOne({ uniqueKey }), music: id });
+        await MusicForcedChange.create({ user: await User.findOne({ uniqueKey }), music: id });
         res.send(new GenResponse(null, 'ok'))
     },
 
