@@ -2,6 +2,7 @@ const GenResponse = require('../../../general/models/genresponse');
 const Error = require('../../../general/models/error');
 const Music = require('../../../general/models/music');
 const User = require('../../../general/models/user');
+const MusicForcedChange = require('../../../general/models/music_forced_change');
 const http = require('https');
 const jwt = require('jsonwebtoken');
 const Fs = require('fs-extra');
@@ -19,7 +20,7 @@ module.exports = {
     userInfo: async (req, res, next) => {
         const { uniqueKey, versionCode } = req.query;
 
-        var user = await User.findOneAndUpdate({ uniqueKey });
+        var user = await User.findOne({ uniqueKey });
         if (user)
             await User.findOneAndUpdate({ uniqueKey }, { versionCode, dateUpdated: Date.now() });
         else {
@@ -30,13 +31,13 @@ module.exports = {
             }).save();
 
         }
-        res.send(new GenResponse(null, musics))
+        res.send(new GenResponse(null, 'ok'))
     },
 
     nextMusicForced: async (req, res, next) => {
         const { uniqueKey, id } = req.query;
-        var musics = await Music.find({ duration: { $gte: durationFrom }, duration: { $lte: durationTo } });
-        res.send(new GenResponse(null, musics))
+        await MusicForcedChange.save({ user: await User.findOne({ uniqueKey }), music: id });
+        res.send(new GenResponse(null, 'ok'))
     },
 
 
