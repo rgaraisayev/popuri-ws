@@ -1,6 +1,7 @@
 const GenResponse = require('../../../general/models/genresponse');
 const Error = require('../../../general/models/error');
 const Music = require('../../../general/models/music');
+const User = require('../../../general/models/user');
 const http = require('https');
 const jwt = require('jsonwebtoken');
 const Fs = require('fs-extra');
@@ -13,6 +14,31 @@ module.exports = {
         var musics = await Music.find({ duration: { $gte: durationFrom }, duration: { $lte: durationTo } });
         res.send(new GenResponse(null, musics))
     },
+
+
+    userInfo: async (req, res, next) => {
+        const { uniqueKey, versionCode } = req.query;
+
+        var user = await User.findOneAndUpdate({ uniqueKey });
+        if (user)
+            await User.findOneAndUpdate({ uniqueKey }, { versionCode, dateUpdated: Date.now() });
+        else {
+            await new User({
+                uniqueKey,
+                versionCode,
+                dateWritten: Date.now()
+            }).save();
+
+        }
+        res.send(new GenResponse(null, musics))
+    },
+
+    nextMusicForced: async (req, res, next) => {
+        const { uniqueKey, id } = req.query;
+        var musics = await Music.find({ duration: { $gte: durationFrom }, duration: { $lte: durationTo } });
+        res.send(new GenResponse(null, musics))
+    },
+
 
     nextMusic: async (req, res, next) => {
         // const { skip } = req.params;
@@ -39,10 +65,10 @@ module.exports = {
         var music = await Music.findOne(query).skip(parseInt(skip));
         musicList.push(music);
 
-        skip = Math.random() * count; 
+        skip = Math.random() * count;
         music = await Music.findOne(query).skip(parseInt(skip));
         musicList.push(music);
-        
+
         skip = Math.random() * count;
         music = await Music.findOne(query).skip(parseInt(skip));
         musicList.push(music);
@@ -54,54 +80,29 @@ module.exports = {
         res.send(new GenResponse(null, musicList))
     },
 
-    insertMusicsToDb: async (req, res, next) => { 
-        // var filesInfo = Fs.readJSONSync("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\clearmusiclist.json");
+    insertMusicsToDb: async (req, res, next) => {
+        var filesInfo = Fs.readJSONSync("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic3\\clearmusiclist.json");
 
-        // for (let mf of filesInfo) {
-        //     console.log("SAVING: " + mf.fileName)
-        //     await mp3Duration("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic1\\" + mf.fileName, async function (err, duration) {
-        //         if (err) return console.log("MP#: " + err.message);
-        //         if (!await Music.findOne({ name: mf.fileName.split(".")[0] })) {
-        //             await new Music({
-        //                 duration: duration * 1000,
-        //                 lang: 'tr',
-        //                 name: mf.fileName.split(".")[0],
-        //                 format: mf.fileName.split(".")[1],
-        //                 dateWritten: Date.now(),
+        for (let mf of filesInfo) {
+            console.log("SAVING: " + mf.fileName)
+            await mp3Duration("C:\\Users\\rgara\\Projects\\PopuriApp\\Final\\ClearedMusic3\\" + mf.fileName, async function (err, duration) {
+                if (err) return console.log("MP#: " + err.message);
+                if (!await Music.findOne({ name: mf.fileName.split(".")[0] })) {
+                    await new Music({
+                        duration: duration * 1000,
+                        lang: 'az',
+                        name: mf.fileName.split(".")[0],
+                        format: mf.fileName.split(".")[1],
+                        dateWritten: Date.now(),
 
-        //                 song: { author: mf.author, name: mf.musicName }
-        //             }).save();
-        //             console.log("SAVED: " + mf.fileName)
-        //         }
-        //         else
-        //             console.log("ALTEADY HAVE: " + mf.fileName)
-        //     });
-        // }
-
-
-        // for (let file of files) {
-        //     // Fs.moveSync("apps/mustagram/res/music/" + res + '/' + file, "apps/mustagram/res/music/" + file)
-        //     mp3Duration("C:\\Users\\rgara\\Projects\\PopuriApp\\Musics" + file, async function (err, duration) {
-        //         if (err) return console.log("MP#: " + err.message);
-        //         if (!await Music.findOne({ name: file.split(".")[0] })) {
-        //             await new Music({
-        //                 duration: duration * 1000,
-        //                 name: file.split(".")[0],
-        //                 format: file.split(".")[1],
-        //                 dateWritten: Date.now(),
-        //                 dateWritten: Date.now()
-        //             }).save();
-        //             console.log("SAVED: " + file)
-        //         }
-        //         else
-        //             console.log("ALTEADY HAVE: " + file)
-        //     });
-        //     // console.log(files);
-        // }
-        // // console.log(resource)
-        // res.writeHead(200, { 'Content-Type': 'text/html' });
-        // res.end(resource, 'binary');
-        // res.send("OK")
+                        song: { author: mf.author.trim(), name: mf.musicName.trim() }
+                    }).save();
+                    console.log("SAVED: " + mf.fileName)
+                }
+                else
+                    console.log("ALTEADY HAVE: " + mf.fileName)
+            });
+        }
     }
 
 

@@ -6,9 +6,13 @@ const MusicController = require('../controllers/music');
 
 router.route('/filter')
     .get(MusicController.filteredMusics);
- 
+
 router.route('/next')
     .get(MusicController.nextMusic)
+router.route('/next/force')
+    .get(MusicController.nextMusicForced)
+router.route('/userInfo')
+    .get(MusicController.userInfo)
 
 router.route('/')
     .get(MusicController.insertMusicsToDb)
